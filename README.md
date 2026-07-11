@@ -167,12 +167,20 @@ highest recall on the churn class — it catches ~79% of customers who actually 
 
 ## Future Improvements
 
+<<<<<<< HEAD
 - Hyperparameter tuning (GridSearchCV) and gradient boosting (XGBoost / LightGBM)
 - SHAP values for per-customer explanation of risk drivers
 - Monthly retraining on fresh data with model-drift monitoring
 - Cost-based threshold tuning to optimize the retention budget rather than recall alone
 - Deployment as an API so the CRM can score customers in real time
 
+=======
+- Hyperparameter tuning (GridSearchCV) and gradient boosting (XGBoost/LightGBM)
+- SHAP values for per-customer explanation ("this customer is risky *because*…")
+- Retrain monthly on fresh data; track model drift
+- Cost-based threshold tuning (optimize the retention budget, not just recall)
+- Deploy as an API so the CRM can score customers in real time
+>>>>>>> ed16d73b6d448439da41e582f9f64943e387c2b6
 ---
 
 *Dataset: IBM Telco Customer Churn (public sample dataset). Built for educational and
