@@ -1,0 +1,4 @@
+Model,Accuracy,Precision (Churn),Recall (Churn),F1-Score (Churn),Selected
+Logistic Regression,0.7381,0.5043,0.7834,0.6136,No
+Decision Tree,0.7402,0.5069,0.7888,0.6172,Yes
+Random Forest,0.77,0.5521,0.7086,0.6206,No

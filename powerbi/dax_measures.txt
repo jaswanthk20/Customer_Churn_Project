@@ -1,0 +1,126 @@
+============================================================
+DAX MEASURES — Customer Churn Dashboard
+============================================================
+Table name assumed: churn_predictions_powerbi
+(If Power BI named your table differently after import,
+replace the table name in each formula.)
+
+HOW TO ADD A MEASURE:
+1. In Power BI Desktop, right-click the table in the Data pane
+2. Click "New measure"
+3. Paste one formula below and press Enter
+4. Repeat for each measure
+============================================================
+
+
+-- 1. Total Customers
+-- Counts every row (one row = one customer).
+Total Customers = COUNTROWS(churn_predictions_powerbi)
+
+
+-- 2. Churned Customers
+-- Counts customers whose actual churn value is "Yes".
+Churned Customers =
+CALCULATE(
+    COUNTROWS(churn_predictions_powerbi),
+    churn_predictions_powerbi[Actual_Churn] = "Yes"
+)
+
+
+-- 3. Non-Churned Customers
+Non-Churned Customers =
+CALCULATE(
+    COUNTROWS(churn_predictions_powerbi),
+    churn_predictions_powerbi[Actual_Churn] = "No"
+)
+
+
+-- 4. Churn Rate
+-- Churned / Total, shown as a percentage.
+-- After creating it: Measure tools ribbon -> format as Percentage, 1 decimal.
+Churn Rate =
+DIVIDE([Churned Customers], [Total Customers], 0)
+
+
+-- 5. Average Monthly Charges
+-- Format as Currency, 2 decimals.
+Average Monthly Charges =
+AVERAGE(churn_predictions_powerbi[MonthlyCharges])
+
+
+-- 6. Average Total Charges
+-- Format as Currency, 0 decimals.
+Average Total Charges =
+AVERAGE(churn_predictions_powerbi[TotalCharges])
+
+
+-- 7. Average Tenure (months)
+-- Format as Whole number or 1 decimal.
+Average Tenure =
+AVERAGE(churn_predictions_powerbi[tenure])
+
+
+-- 8. Predicted Churn Customers
+-- How many customers the MODEL says will churn.
+Predicted Churn Customers =
+CALCULATE(
+    COUNTROWS(churn_predictions_powerbi),
+    churn_predictions_powerbi[Predicted_Churn] = "Yes"
+)
+
+
+-- 9. High Risk Customers
+-- Customers the model puts in the High risk band (probability >= 60%).
+High Risk Customers =
+CALCULATE(
+    COUNTROWS(churn_predictions_powerbi),
+    churn_predictions_powerbi[Risk_Level] = "High"
+)
+
+
+-- 10. Revenue at Risk
+-- Monthly revenue from ACTIVE customers the model predicts will churn.
+-- These are the dollars we can still save. Format as Currency, 0 decimals.
+Revenue at Risk =
+CALCULATE(
+    SUM(churn_predictions_powerbi[MonthlyCharges]),
+    churn_predictions_powerbi[Predicted_Churn] = "Yes",
+    churn_predictions_powerbi[Actual_Churn] = "No"
+)
+
+
+-- 11. Average Churn Probability
+-- The average model score across the current filter.
+-- Format as Percentage, 1 decimal.
+Average Churn Probability =
+AVERAGE(churn_predictions_powerbi[Churn_Probability])
+
+
+============================================================
+BONUS MEASURES (nice-to-have)
+============================================================
+
+-- 12. Annual Revenue at Risk
+Annual Revenue at Risk = [Revenue at Risk] * 12
+
+
+-- 13. Model Accuracy (how often prediction matched reality)
+Model Accuracy =
+DIVIDE(
+    CALCULATE(
+        COUNTROWS(churn_predictions_powerbi),
+        churn_predictions_powerbi[Actual_Churn]
+            = churn_predictions_powerbi[Predicted_Churn]
+    ),
+    [Total Customers],
+    0
+)
+
+
+-- 14. Active High Risk Customers (still saveable — for the call list)
+Active High Risk Customers =
+CALCULATE(
+    COUNTROWS(churn_predictions_powerbi),
+    churn_predictions_powerbi[Risk_Level] = "High",
+    churn_predictions_powerbi[Actual_Churn] = "No"
+)

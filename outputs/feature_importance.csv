@@ -1,0 +1,46 @@
+Feature,Importance,Model
+Contract_Month-to-month,0.5608837235197639,Decision Tree
+tenure,0.10447717548744578,Decision Tree
+InternetService_Fiber optic,0.09955409379575768,Decision Tree
+MonthlyCharges,0.07276644441177951,Decision Tree
+TotalCharges,0.03177102318090961,Decision Tree
+Contract_Two year,0.020974231875207847,Decision Tree
+PaymentMethod_Electronic check,0.01997383925797583,Decision Tree
+TechSupport_No,0.01793320428648379,Decision Tree
+StreamingMovies_No,0.015086809786334214,Decision Tree
+OnlineSecurity_No,0.014889645124126565,Decision Tree
+PhoneService_Yes,0.010723800183745335,Decision Tree
+Dependents_Yes,0.005136392331205723,Decision Tree
+SeniorCitizen,0.004840100890411896,Decision Tree
+PaperlessBilling_No,0.004766525273581215,Decision Tree
+PaymentMethod_Mailed check,0.003706223342380801,Decision Tree
+MultipleLines_No,0.0032606520713088973,Decision Tree
+StreamingTV_Yes,0.0028009289619944488,Decision Tree
+StreamingMovies_Yes,0.002108825867602817,Decision Tree
+Partner_No,0.0017167682402559786,Decision Tree
+TechSupport_Yes,0.0016101693072352735,Decision Tree
+PaymentMethod_Credit card (automatic),0.0006322279773699019,Decision Tree
+OnlineBackup_No,0.0003871948271231647,Decision Tree
+PhoneService_No,0.0,Decision Tree
+Partner_Yes,0.0,Decision Tree
+Dependents_No,0.0,Decision Tree
+gender_Female,0.0,Decision Tree
+gender_Male,0.0,Decision Tree
+InternetService_DSL,0.0,Decision Tree
+InternetService_No,0.0,Decision Tree
+TechSupport_No internet service,0.0,Decision Tree
+DeviceProtection_Yes,0.0,Decision Tree
+DeviceProtection_No internet service,0.0,Decision Tree
+DeviceProtection_No,0.0,Decision Tree
+OnlineBackup_No internet service,0.0,Decision Tree
+OnlineBackup_Yes,0.0,Decision Tree
+OnlineSecurity_No internet service,0.0,Decision Tree
+OnlineSecurity_Yes,0.0,Decision Tree
+MultipleLines_No phone service,0.0,Decision Tree
+MultipleLines_Yes,0.0,Decision Tree
+StreamingTV_No,0.0,Decision Tree
+StreamingTV_No internet service,0.0,Decision Tree
+StreamingMovies_No internet service,0.0,Decision Tree
+Contract_One year,0.0,Decision Tree
+PaperlessBilling_Yes,0.0,Decision Tree
+PaymentMethod_Bank transfer (automatic),0.0,Decision Tree

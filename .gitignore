@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Environments
+venv/
+.env
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# SQLite databases created during analysis
+*.db
+
+# Power BI temp files
+*.pbix.tmp

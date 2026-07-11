@@ -1,0 +1,29 @@
+============================================================
+ CUSTOMER CHURN — BUSINESS INSIGHTS & RECOMMENDATIONS
+============================================================
+
+HEADLINE NUMBERS
+- Total customers analyzed: 7,043
+- Customers who churned: 1,869 (26.5%)
+- Customers flagged HIGH risk by the model: 2,453
+- Active customers predicted to churn: 1,432
+- Estimated monthly revenue at risk: $110,234
+
+KEY INSIGHTS
+1. CONTRACT TYPE is the #1 churn driver. Month-to-month customers churn at 42.7%, versus 11.3% (one-year) and 2.8% (two-year).
+2. NEW CUSTOMERS leave the most. Churn in the first 12 months is 47.4%, falling to 9.5% after 4 years.
+3. FIBER OPTIC customers churn at 41.9%, far above DSL at 19.0% — likely a price or service-quality issue worth investigating.
+4. ELECTRONIC CHECK payers churn at 45.3%, the highest of any payment method.
+5. HIGH MONTHLY CHARGES combined with a month-to-month contract is the highest-risk combination in the customer base.
+
+RECOMMENDATIONS
+1. Offer month-to-month customers a discount to move to 1- or 2-year contracts — contract length is the strongest retention lever.
+2. Build a 90-day onboarding program (welcome calls, setup help, first-bill review) — most churn happens early in the customer life.
+3. Give the High-risk list from this model to the retention team for proactive outreach with loyalty offers.
+4. Review fiber optic pricing and service quality — its churn rate is roughly double DSL's.
+5. Investigate the electronic-check experience (failed payments, manual effort) and nudge customers toward auto-pay methods.
+
+HOW TO USE THE MODEL OUTPUT
+- churn_predictions.csv lists every customer with a churn probability and a High/Medium/Low risk level.
+- Sort by Churn_Probability (descending) and filter Actual_Churn = 'No' to get the retention call list.
+============================================================
