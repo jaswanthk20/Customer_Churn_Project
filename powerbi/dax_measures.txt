@@ -1,87 +1,195 @@
 ============================================================
 DAX MEASURES — Customer Churn Dashboard
 ============================================================
-Table name assumed: churn_predictions_powerbi
-(If Power BI named your table differently after import,
-replace the table name in each formula.)
+Main table : churn_predictions_powerbi
+Second table: feature_importance  (bar chart on Page 3 only)
 
-HOW TO ADD A MEASURE:
-1. In Power BI Desktop, right-click the table in the Data pane
-2. Click "New measure"
-3. Paste one formula below and press Enter
-4. Repeat for each measure
+SETUP TIP — create a dedicated measure table so measures
+don't get lost among columns:
+  Home ribbon -> Enter data -> name it "_Measures" -> Load
+  Create every measure with the _Measures table selected.
+
+HOW TO ADD EACH MEASURE:
+  Right-click _Measures in the Data pane -> New measure ->
+  paste the formula -> Enter -> set the format in the
+  Measure tools ribbon (format noted under each measure).
+
+Expected values below are from the real data (7,043 customers)
+so you can verify each measure as you build it.
 ============================================================
 
 
+------------------------------------------------------------
+GROUP 1 — CUSTOMER COUNTS
+------------------------------------------------------------
+
 -- 1. Total Customers
--- Counts every row (one row = one customer).
+-- Every row is one customer, so counting rows counts customers.
+-- Use: KPI card (all pages), denominator inside other measures.
+-- Format: Whole number, thousands separator.   Expected: 7,043
 Total Customers = COUNTROWS(churn_predictions_powerbi)
 
 
 -- 2. Churned Customers
--- Counts customers whose actual churn value is "Yes".
+-- Customers who actually left (ground truth, not prediction).
+-- Use: Page 1 KPI, donut chart.
+-- Format: Whole number.   Expected: 1,869
 Churned Customers =
 CALCULATE(
-    COUNTROWS(churn_predictions_powerbi),
+    [Total Customers],
     churn_predictions_powerbi[Actual_Churn] = "Yes"
 )
 
 
 -- 3. Non-Churned Customers
+-- Customers still active — the base we can still protect.
+-- Use: building block for retention measures.
+-- Format: Whole number.   Expected: 5,174
 Non-Churned Customers =
 CALCULATE(
-    COUNTROWS(churn_predictions_powerbi),
+    [Total Customers],
     churn_predictions_powerbi[Actual_Churn] = "No"
 )
 
 
--- 4. Churn Rate
--- Churned / Total, shown as a percentage.
--- After creating it: Measure tools ribbon -> format as Percentage, 1 decimal.
-Churn Rate =
+------------------------------------------------------------
+GROUP 2 — CHURN RATES
+------------------------------------------------------------
+
+-- 4. Actual Churn Rate
+-- % of customers who really churned. THE headline KPI.
+-- Recalculates per bar automatically (e.g. by Contract).
+-- Use: Page 1 KPI card + every "churn rate by X" bar chart.
+-- Format: Percentage, 1 decimal.   Expected: 26.5%
+Actual Churn Rate =
 DIVIDE([Churned Customers], [Total Customers], 0)
 
 
--- 5. Average Monthly Charges
--- Format as Currency, 2 decimals.
-Average Monthly Charges =
-AVERAGE(churn_predictions_powerbi[MonthlyCharges])
+-- 5. Customer Retention Rate
+-- The optimistic twin of churn rate (100% - churn rate).
+-- Use: Page 4 business-impact section.
+-- Format: Percentage, 1 decimal.   Expected: 73.5%
+Customer Retention Rate = 1 - [Actual Churn Rate]
 
 
--- 6. Average Total Charges
--- Format as Currency, 0 decimals.
-Average Total Charges =
-AVERAGE(churn_predictions_powerbi[TotalCharges])
-
-
--- 7. Average Tenure (months)
--- Format as Whole number or 1 decimal.
-Average Tenure =
-AVERAGE(churn_predictions_powerbi[tenure])
-
-
--- 8. Predicted Churn Customers
--- How many customers the MODEL says will churn.
+-- 6. Predicted Churn Customers
+-- How many customers the MODEL flags as likely churners.
+-- Note: higher than actual churn (2,993 vs 1,869) because the
+-- model is deliberately tuned for recall — it would rather
+-- over-warn than miss a churner.
+-- Use: Page 1 KPI card.
+-- Format: Whole number.   Expected: 2,993
 Predicted Churn Customers =
 CALCULATE(
-    COUNTROWS(churn_predictions_powerbi),
+    [Total Customers],
     churn_predictions_powerbi[Predicted_Churn] = "Yes"
 )
 
 
--- 9. High Risk Customers
--- Customers the model puts in the High risk band (probability >= 60%).
+-- 7. Predicted Churn Rate
+-- Share of the (filtered) base the model expects to churn.
+-- Use: tooltips, Page 3 segment analysis.
+-- Format: Percentage, 1 decimal.   Expected: 42.5%
+Predicted Churn Rate =
+DIVIDE([Predicted Churn Customers], [Total Customers], 0)
+
+
+------------------------------------------------------------
+GROUP 3 — RISK SEGMENTATION
+------------------------------------------------------------
+
+-- 8. High Risk Customers        (probability >= 60%)
+-- Format: Whole number.   Expected: 2,453
 High Risk Customers =
 CALCULATE(
-    COUNTROWS(churn_predictions_powerbi),
+    [Total Customers],
     churn_predictions_powerbi[Risk_Level] = "High"
 )
 
 
--- 10. Revenue at Risk
--- Monthly revenue from ACTIVE customers the model predicts will churn.
--- These are the dollars we can still save. Format as Currency, 0 decimals.
-Revenue at Risk =
+-- 9. Medium Risk Customers      (probability 30-59%)
+-- Format: Whole number.   Expected: 1,275
+Medium Risk Customers =
+CALCULATE(
+    [Total Customers],
+    churn_predictions_powerbi[Risk_Level] = "Medium"
+)
+
+
+-- 10. Low Risk Customers        (probability < 30%)
+-- Format: Whole number.   Expected: 3,315
+Low Risk Customers =
+CALCULATE(
+    [Total Customers],
+    churn_predictions_powerbi[Risk_Level] = "Low"
+)
+
+
+-- 11. Active High Risk Customers
+-- THE CALL LIST SIZE: high risk AND still a customer.
+-- Churned customers are excluded — you can't save someone
+-- who already left.
+-- Use: Page 2 KPI card, Page 4 "Customers Targeted".
+-- Format: Whole number.   Expected: 1,050
+Active High Risk Customers =
+CALCULATE(
+    [Total Customers],
+    churn_predictions_powerbi[Risk_Level] = "High",
+    churn_predictions_powerbi[Actual_Churn] = "No"
+)
+
+
+-- 12. Average Churn Probability
+-- Mean model score for the current filter selection.
+-- Use: Page 2 distribution context, tooltips.
+-- Format: Percentage, 1 decimal.   Expected: 40.2%
+Average Churn Probability =
+AVERAGE(churn_predictions_powerbi[Churn_Probability])
+
+
+------------------------------------------------------------
+GROUP 4 — REVENUE & VALUE
+------------------------------------------------------------
+
+-- 13. Average Monthly Charges
+-- Format: Currency $, 2 decimals.   Expected: $64.76
+Average Monthly Charges =
+AVERAGE(churn_predictions_powerbi[MonthlyCharges])
+
+
+-- 14. Average Total Charges
+-- Lifetime spend per customer.
+-- Format: Currency $, 0 decimals.   Expected: $2,280
+Average Total Charges =
+AVERAGE(churn_predictions_powerbi[TotalCharges])
+
+
+-- 15. Average Tenure
+-- Months a customer stays, on average.
+-- Format: Whole number (or 1 decimal).   Expected: 32
+Average Tenure =
+AVERAGE(churn_predictions_powerbi[tenure])
+
+
+-- 16. Average Revenue per Customer
+-- Same as Average Monthly Charges but named for executives —
+-- use this name on Page 1/4 cards.
+-- Format: Currency $, 2 decimals.   Expected: $64.76
+Average Revenue per Customer =
+DIVIDE(
+    SUM(churn_predictions_powerbi[MonthlyCharges]),
+    [Total Customers],
+    0
+)
+
+
+-- 17. Monthly Revenue at Risk
+-- Monthly $ from ACTIVE customers the model predicts will
+-- churn. This is money we still have — and could lose.
+-- The single most persuasive number on the dashboard.
+-- Use: Page 1 hero KPI, Page 4 chart by contract.
+-- Format: Currency $, 0 decimals.   Expected: $110,234
+Monthly Revenue at Risk =
 CALCULATE(
     SUM(churn_predictions_powerbi[MonthlyCharges]),
     churn_predictions_powerbi[Predicted_Churn] = "Yes",
@@ -89,38 +197,125 @@ CALCULATE(
 )
 
 
--- 11. Average Churn Probability
--- The average model score across the current filter.
--- Format as Percentage, 1 decimal.
-Average Churn Probability =
-AVERAGE(churn_predictions_powerbi[Churn_Probability])
+-- 18. Annual Revenue at Risk
+-- Monthly at-risk revenue annualized. Executives think yearly.
+-- Format: Currency $, display units Millions, 2 dec.  Expected: $1.32M
+Annual Revenue at Risk = [Monthly Revenue at Risk] * 12
 
 
-============================================================
-BONUS MEASURES (nice-to-have)
-============================================================
-
--- 12. Annual Revenue at Risk
-Annual Revenue at Risk = [Revenue at Risk] * 12
-
-
--- 13. Model Accuracy (how often prediction matched reality)
-Model Accuracy =
-DIVIDE(
-    CALCULATE(
-        COUNTROWS(churn_predictions_powerbi),
-        churn_predictions_powerbi[Actual_Churn]
-            = churn_predictions_powerbi[Predicted_Churn]
-    ),
-    [Total Customers],
-    0
-)
+-- 19. Saveable Revenue at Risk
+-- Identical logic to Monthly Revenue at Risk, exposed under a
+-- retention-team-friendly name for Page 2. (Keeping it as its
+-- own measure lets you rename/adjust it independently later.)
+-- Format: Currency $, 0 decimals.   Expected: $110,234
+Saveable Revenue at Risk = [Monthly Revenue at Risk]
 
 
--- 14. Active High Risk Customers (still saveable — for the call list)
-Active High Risk Customers =
+-- 20. High Risk Revenue
+-- Monthly $ sitting in the High risk band (incl. already-churned
+-- rows; use with an Actual_Churn slicer/filter for active-only).
+-- Use: Page 4 value-segment analysis.
+-- Format: Currency $, 0 decimals.   Expected: $181,578
+High Risk Revenue =
 CALCULATE(
-    COUNTROWS(churn_predictions_powerbi),
-    churn_predictions_powerbi[Risk_Level] = "High",
-    churn_predictions_powerbi[Actual_Churn] = "No"
+    SUM(churn_predictions_powerbi[MonthlyCharges]),
+    churn_predictions_powerbi[Risk_Level] = "High"
 )
+
+
+------------------------------------------------------------
+GROUP 5 — MODEL QUALITY (confusion matrix in DAX)
+------------------------------------------------------------
+-- These four cells are the classic confusion matrix:
+--                      Predicted Yes    Predicted No
+--   Actually churned   True Positive    False Negative
+--   Actually stayed    False Positive   True Negative
+
+-- 21. True Positives — churners the model CAUGHT.
+-- Format: Whole number.   Expected: 1,561
+True Positives =
+CALCULATE(
+    [Total Customers],
+    churn_predictions_powerbi[Actual_Churn] = "Yes",
+    churn_predictions_powerbi[Predicted_Churn] = "Yes"
+)
+
+
+-- 22. True Negatives — loyal customers correctly left alone.
+-- Format: Whole number.   Expected: 3,742
+True Negatives =
+CALCULATE(
+    [Total Customers],
+    churn_predictions_powerbi[Actual_Churn] = "No",
+    churn_predictions_powerbi[Predicted_Churn] = "No"
+)
+
+
+-- 23. False Positives — "false alarms". NOT wasted: these are
+-- exactly the at-risk active customers on the retention list.
+-- Format: Whole number.   Expected: 1,432
+False Positives =
+CALCULATE(
+    [Total Customers],
+    churn_predictions_powerbi[Actual_Churn] = "No",
+    churn_predictions_powerbi[Predicted_Churn] = "Yes"
+)
+
+
+-- 24. False Negatives — churners the model MISSED.
+-- The most expensive mistake; we minimized this on purpose.
+-- Format: Whole number.   Expected: 308
+False Negatives =
+CALCULATE(
+    [Total Customers],
+    churn_predictions_powerbi[Actual_Churn] = "Yes",
+    churn_predictions_powerbi[Predicted_Churn] = "No"
+)
+
+
+-- 25. Model Accuracy
+-- % of customers where prediction matched reality.
+-- Note: on the full dataset this reads 75.3%; the held-out
+-- test-set numbers are 74% accuracy and 79% recall.
+-- Format: Percentage, 1 decimal.   Expected: 75.3%
+Model Accuracy =
+DIVIDE([True Positives] + [True Negatives], [Total Customers], 0)
+
+
+-- 26. Model Recall (bonus)
+-- Of customers who really churned, % the model caught.
+-- Format: Percentage, 1 decimal.   Expected: 83.5% (full data)
+Model Recall =
+DIVIDE([True Positives], [True Positives] + [False Negatives], 0)
+
+
+------------------------------------------------------------
+GROUP 6 — DISPLAY HELPERS (optional but polished)
+------------------------------------------------------------
+
+-- 27. Revenue at Risk (K) — compact text for small KPI cards.
+-- Format: comes out as text, no extra formatting needed.
+Revenue at Risk (K) =
+"$" & FORMAT([Monthly Revenue at Risk] / 1000, "#,0.0") & "K / mo"
+
+
+-- 28. Churn vs Predicted Gap — for tooltips: how much wider the
+-- model casts its net than actual churn.
+Churn vs Predicted Gap =
+[Predicted Churn Customers] - [Churned Customers]
+
+
+============================================================
+VERIFICATION CHECKLIST (unfiltered, whole dataset)
+============================================================
+Total Customers            7,043      Actual Churn Rate    26.5%
+Churned Customers          1,869      Predicted Churn      2,993
+High / Med / Low Risk      2,453 / 1,275 / 3,315
+Active High Risk           1,050      Avg Churn Prob       40.2%
+Monthly Revenue at Risk    $110,234   Annual at Risk       $1.32M
+High Risk Revenue          $181,578   Avg Monthly Charges  $64.76
+TP / TN / FP / FN          1,561 / 3,742 / 1,432 / 308
+Model Accuracy             75.3%      Model Recall         83.5%
+If a card shows a different number, re-check the measure's
+filters and the CSV import row count.
+============================================================

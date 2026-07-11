@@ -1,8 +1,7 @@
 # Project Summary — Customer Churn Prediction
 ### Python | SQL | Power BI
 
-*A plain-English explanation of the project, suitable for a college submission,
-portfolio, or interview preparation.*
+*A plain-English explanation of the project and its findings.*
 
 ---
 
@@ -101,16 +100,18 @@ Every customer was then scored with a churn probability and grouped into
 
 ## 8. Power BI Dashboard
 
-A 3-page interactive dashboard built from the model's output file:
+A 4-page interactive dashboard built from the model's output file:
 
 1. **Executive Overview** — KPI cards (total customers, churn rate, revenue at risk),
    churn split, and churn by contract and payment method, with slicers for filtering
-2. **Customer Risk Analysis** — a ranked table of high-risk customers (the retention
+2. **Customer Risk Center** — a ranked table of high-risk customers (the retention
    team's call list), churn probability distribution, and risk-level breakdown
-3. **Business Insights** — churn by tenure and charge groups, the model's feature
-   importance chart, and recommended retention actions
+3. **Churn Drivers & Segments** — churn by tenure and charge groups, the model's feature
+   importance chart, and a contract-by-internet-service heatmap
+4. **Retention Strategy** — a prioritized action plan mapping each at-risk segment to a
+   recommended action and its expected business impact
 
-The dashboard uses 11+ DAX measures, including **Revenue at Risk** — the monthly revenue
+The dashboard uses 28 DAX measures, including **Revenue at Risk** — the monthly revenue
 of active customers the model predicts will churn: **~$110,000/month**.
 
 ## 9. Key Findings
