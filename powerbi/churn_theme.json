@@ -1,0 +1,31 @@
+{
+  "name": "Churn Analytics",
+  "dataColors": [
+    "#2F80ED",
+    "#D64550",
+    "#2EAD70",
+    "#F2A93B",
+    "#2A9D8F",
+    "#5E6C84"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#172B4D",
+  "tableAccent": "#2F80ED",
+  "textClasses": {
+    "title": {
+      "color": "#172B4D",
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 12
+    },
+    "label": {
+      "color": "#5E6C84",
+      "fontFace": "Segoe UI",
+      "fontSize": 9
+    },
+    "callout": {
+      "color": "#172B4D",
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 26
+    }
+  }
+}
