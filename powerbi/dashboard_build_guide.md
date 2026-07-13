@@ -280,4 +280,5 @@ Format ribbon → **Edit interactions** → set that target to "None".
 - **PDF export:** File → Export → **Export to PDF**
   (exports all visible pages with current filter state — clear slicers first).
 - **Screenshots for the GitHub README:** maximize each page in Reading view,
-  Win+Shift+S, save into `powerbi/screenshots/` as `page1_overview.png` etc.
+  Win+Shift+S, save into `powerbi/screenshots/` as `page1_executive_overview.png`,
+  `page2_customer_risk_center.png`, and so on.

@@ -42,8 +42,11 @@ Produced by running the Python pipeline from the repo root
 
 | File | Purpose |
 |---|---|
+| `customer_churn_dashboard.pbix` | **The finished dashboard** — open directly in Power BI Desktop |
+| `churn_theme.json` | Color/font theme applied to the report |
+| `screenshots/` | Page images used in the main project README |
 | `README_POWERBI.md` | This file — start here |
-| `dashboard_build_guide.md` | **The main recipe** — click-by-click build (2.5–3.5 h) |
+| `dashboard_build_guide.md` | The main recipe — click-by-click build (2.5–3.5 h) |
 | `dax_measures.txt` | 28 DAX measures with formulas, explanations, formats, and expected values |
 | `power_query_steps.md` | Data import & transformation (clicks + full M code) |
 | `dashboard_wireframe.md` | Pixel-exact layout of every visual on all 4 pages |
@@ -51,6 +54,9 @@ Produced by running the Python pipeline from the repo root
 | `dashboard_user_guide.md` | How a business user reads and uses the dashboard |
 
 ## How to build (short version)
+
+Already built: open `customer_churn_dashboard.pbix` in Power BI Desktop. To
+reproduce it from scratch:
 
 1. Run the Python pipeline (see above) so the CSVs exist.
 2. Open `dashboard_build_guide.md` and follow Parts 1–10 in order:
@@ -70,18 +76,17 @@ helpers. Full formulas: `dax_measures.txt`.
 
 ## Screenshots
 
-After building, save Reading-view screenshots here and link them in the
-main repo README:
+Page images live in `screenshots/` and are displayed in the main project README:
 
 ```
 powerbi/screenshots/
 ├── page1_executive_overview.png
-├── page2_risk_center.png
+├── page2_customer_risk_center.png
 ├── page3_churn_drivers.png
 └── page4_retention_strategy.png
 ```
 
-<!-- Add images like: ![Executive Overview](screenshots/page1_executive_overview.png) -->
+To refresh them, open the `.pbix`, switch to Reading view, and re-export each page.
 
 ## Troubleshooting
 

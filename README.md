@@ -16,6 +16,52 @@ results through an interactive **Power BI dashboard**.
 | **Output** | Customer-level churn probabilities and risk levels feeding a 4-page dashboard |
 | **Headline result** | Model catches ~79% of real churners; ~$110K/month of revenue identified at risk |
 
+## Dashboard Preview
+
+A 4-page Power BI dashboard turns the model output into decisions, with one page per
+audience. Full build instructions are in [`powerbi/`](powerbi/).
+
+### 1. Executive Overview
+
+![Executive Overview](powerbi/screenshots/page1_executive_overview.png)
+
+The leadership snapshot. KPI cards quantify the problem — 7,043 customers, a 26.5% actual
+churn rate, and **$110K/month ($1.32M/year) of revenue at risk**. The charts locate the
+churn: month-to-month contracts (42.7% vs 2.8% for two-year) and electronic-check payments
+(45.3%) stand out as the biggest concentrations.
+
+### 2. Customer Risk Center
+
+![Customer Risk Center](powerbi/screenshots/page2_customer_risk_center.png)
+
+The retention team's worklist — a prioritized call list of active customers ranked by churn
+probability (highest first), with slicers to focus by risk level, contract, or internet
+service. Supporting visuals show the risk-level split (2,453 High / 1,275 Medium /
+3,315 Low) and where the high-risk revenue sits by contract type.
+
+### 3. Churn Drivers & Segments
+
+![Churn Drivers and Segments](powerbi/screenshots/page3_churn_drivers.png)
+
+The "why" behind churn. The model's feature-importance ranking confirms month-to-month
+contract, tenure, fiber optic service, and monthly charges as the top drivers. The
+heatmap pinpoints the worst segment — **month-to-month + fiber optic customers churn at
+54.6%** — while the small-multiple charts break churn rate down by tenure, charges,
+internet service, senior status, and paperless billing.
+
+### 4. Retention Strategy
+
+![Retention Strategy](powerbi/screenshots/page4_retention_strategy.png)
+
+From insight to action. This page targets ~1,050 active high-risk customers, shows that
+**$92K of the $110K at-risk revenue sits in month-to-month contracts**, and breaks the
+high-risk base down by customer value. The takeaway: saving just 1 in 4 targeted customers
+would protect roughly $28K/month (~$330K/year).
+
+> Screenshots live in `powerbi/screenshots/`. To regenerate them, build the dashboard from
+> [`powerbi/dashboard_build_guide.md`](powerbi/dashboard_build_guide.md) and export each
+> page from Power BI Desktop.
+
 ## Business Problem
 
 Telecom companies lose roughly 26% of customers per year. Acquiring a new customer costs
@@ -70,13 +116,16 @@ Customer_Churn_Project/
 │   ├── exploratory_analysis.sql
 │   └── churn_business_queries.sql
 ├── powerbi/
-│   ├── README_POWERBI.md          # Power BI package overview
-│   ├── dashboard_build_guide.md   # step-by-step build instructions
-│   ├── dashboard_wireframe.md     # pixel-exact page layouts
-│   ├── dashboard_design_system.md # colors, fonts, theme JSON
-│   ├── dax_measures.txt           # all DAX measures
-│   ├── power_query_steps.md       # data import and transformation
-│   └── dashboard_user_guide.md    # how to read and use the dashboard
+│   ├── customer_churn_dashboard.pbix  # prebuilt 4-page dashboard
+│   ├── churn_theme.json               # dashboard color/font theme
+│   ├── screenshots/                   # page images used in this README
+│   ├── README_POWERBI.md              # Power BI package overview
+│   ├── dashboard_build_guide.md       # step-by-step build instructions
+│   ├── dashboard_wireframe.md         # pixel-exact page layouts
+│   ├── dashboard_design_system.md     # colors, fonts, theme JSON
+│   ├── dax_measures.txt               # all DAX measures
+│   ├── power_query_steps.md           # data import and transformation
+│   └── dashboard_user_guide.md        # how to read and use the dashboard
 ├── outputs/                    # model, predictions, metrics (script output)
 ├── README.md
 ├── requirements.txt
@@ -121,6 +170,9 @@ Alternatively, use a GUI like DB Browser for SQLite: create the tables with
 `sql/create_tables.sql`, import both CSVs, and run the queries.
 
 ### 3. Power BI dashboard
+
+The fastest path is to open the prebuilt `powerbi/customer_churn_dashboard.pbix`
+in Power BI Desktop. To rebuild it from scratch:
 
 1. Open Power BI Desktop, then Get data -> Text/CSV -> `data/powerbi/churn_predictions_powerbi.csv`
 2. Create the measures from `powerbi/dax_measures.txt`
@@ -173,8 +225,7 @@ highest recall on the churn class — it catches ~79% of customers who actually 
 - Cost-based threshold tuning to optimize the retention budget rather than recall alone
 - Deployment as an API so the CRM can score customers in real time
 
-- Hyperparameter tuning (GridSearchCV) and gradient boosting (XGBoost/LightGBM)
-- SHAP values for per-customer explanation ("this customer is risky *because*…")
-- Retrain monthly on fresh data; track model drift
-- Cost-based threshold tuning (optimize the retention budget, not just recall)
-- Deploy as an API so the CRM can score customers in real time
+---
+
+*Dataset: IBM Telco Customer Churn (public sample dataset). Built for educational and
+demonstration purposes.*
