@@ -1,4 +1,4 @@
-# Customer Churn Prediction — Python, SQL & Power BI
+# Customer Churn Prediction - Python, SQL & Power BI
 
 An end-to-end predictive analytics project that identifies telecom customers likely to
 **churn** (cancel their service), quantifies the **revenue at risk**, and delivers the
@@ -11,7 +11,7 @@ results through an interactive **Power BI dashboard**.
 | | |
 |---|---|
 | **Goal** | Predict which customers will churn so the business can retain them proactively |
-| **Dataset** | Telco Customer Churn — 7,043 customers, 21 columns |
+| **Dataset** | Telco Customer Churn - 7,043 customers, 21 columns |
 | **Tools** | Python (pandas, scikit-learn), SQL, Power BI, Jupyter |
 | **Output** | Customer-level churn probabilities and risk levels feeding a 4-page dashboard |
 | **Headline result** | Model catches ~79% of real churners; ~$110K/month of revenue identified at risk |
@@ -25,7 +25,7 @@ audience. Full build instructions are in [`powerbi/`](powerbi/).
 
 ![Executive Overview](powerbi/screenshots/page1_executive_overview.png)
 
-The leadership snapshot. KPI cards quantify the problem — 7,043 customers, a 26.5% actual
+The leadership snapshot. KPI cards quantify the problem - 7,043 customers, a 26.5% actual
 churn rate, and **$110K/month ($1.32M/year) of revenue at risk**. The charts locate the
 churn: month-to-month contracts (42.7% vs 2.8% for two-year) and electronic-check payments
 (45.3%) stand out as the biggest concentrations.
@@ -34,7 +34,7 @@ churn: month-to-month contracts (42.7% vs 2.8% for two-year) and electronic-chec
 
 ![Customer Risk Center](powerbi/screenshots/page2_customer_risk_center.png)
 
-The retention team's worklist — a prioritized call list of active customers ranked by churn
+The retention team's worklist - a prioritized call list of active customers ranked by churn
 probability (highest first), with slicers to focus by risk level, contract, or internet
 service. Supporting visuals show the risk-level split (2,453 High / 1,275 Medium /
 3,315 Low) and where the high-risk revenue sits by contract type.
@@ -45,8 +45,8 @@ service. Supporting visuals show the risk-level split (2,453 High / 1,275 Medium
 
 The "why" behind churn. The model's feature-importance ranking confirms month-to-month
 contract, tenure, fiber optic service, and monthly charges as the top drivers. The
-heatmap pinpoints the worst segment — **month-to-month + fiber optic customers churn at
-54.6%** — while the small-multiple charts break churn rate down by tenure, charges,
+heatmap pinpoints the worst segment - **month-to-month + fiber optic customers churn at
+54.6%** - while the small-multiple charts break churn rate down by tenure, charges,
 internet service, senior status, and paperless billing.
 
 ### 4. Retention Strategy
@@ -75,7 +75,7 @@ save significant revenue. This project answers three questions:
 
 ## Dataset Description
 
-`data/raw/telco_customer_churn.csv` — one row per customer:
+`data/raw/telco_customer_churn.csv` - one row per customer:
 
 | Category | Columns |
 |---|---|
@@ -83,7 +83,7 @@ save significant revenue. This project answers three questions:
 | Account | tenure, Contract, PaperlessBilling, PaymentMethod |
 | Services | PhoneService, MultipleLines, InternetService, OnlineSecurity, OnlineBackup, DeviceProtection, TechSupport, StreamingTV, StreamingMovies |
 | Billing | MonthlyCharges, TotalCharges |
-| Target | Churn (Yes / No) — 26.5% churned |
+| Target | Churn (Yes / No) - 26.5% churned |
 
 ## Project Workflow
 
@@ -195,16 +195,16 @@ class imbalance, evaluated on a stratified 20% hold-out test set:
 **Why recall over accuracy?** Missing a real churner (false negative) means losing
 ~$65–100/month plus reacquisition costs. Flagging a loyal customer by mistake (false
 positive) only costs a small retention offer. The model was therefore selected for the
-highest recall on the churn class — it catches ~79% of customers who actually churn.
+highest recall on the churn class - it catches ~79% of customers who actually churn.
 
 ## Key Insights
 
-1. **Contract type is the leading churn driver** — month-to-month customers churn at 42.7%
+1. **Contract type is the leading churn driver** - month-to-month customers churn at 42.7%
    versus 11.3% (one-year) and 2.8% (two-year).
-2. **New customers churn most** — 47.4% churn in the first 12 months, dropping to 9.5%
+2. **New customers churn most** - 47.4% churn in the first 12 months, dropping to 9.5%
    after four years.
-3. **Fiber optic customers churn at 41.9%** — more than double DSL (19.0%).
-4. **Electronic check payers churn at 45.3%** — the highest of any payment method.
+3. **Fiber optic customers churn at 41.9%** - more than double DSL (19.0%).
+4. **Electronic check payers churn at 45.3%** - the highest of any payment method.
 5. **~$110K/month of revenue is at risk** from active customers the model predicts will churn.
 
 ## Business Recommendations
